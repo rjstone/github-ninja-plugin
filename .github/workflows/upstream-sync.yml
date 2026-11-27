@@ -1,11 +1,14 @@
-# Upstream skill updates, Dependabot-style: one branch (upstream-sync) and one PR for all skills.
+# Dependabot-style updates in two independent categories, each with one branch and one PR:
+#   skills: upstream-sync branch: upstream changes to copied skills (scripts/sync_upstream.py)
+#   deps:   deps-sync branch: newer releases of tools that skills pin (scripts/pins.py,
+#           skill-pins.json)
 #
-# Each run rebuilds upstream-sync from main plus every pending upstream update
-# (scripts/sync_upstream.py --apply), runs the same checks as check.yml, then force-pushes the
-# branch and opens the PR or refreshes its description. A later update to any skill therefore
-# lands in the same open PR. If someone pushed their own commits to upstream-sync, the run leaves
-# the branch alone and warns. If nothing is pending any more (e.g. upstream reverted), an open
-# sync PR is closed.
+# Each run rebuilds a category's branch from main plus everything pending in that category,
+# runs the same checks as check.yml, then force-pushes the branch and opens the PR or
+# refreshes its description. A later update therefore lands in the same open PR. Once one
+# category's PR is merged, the other's next run rebuilds on top of it. If someone pushed their
+# own commits to a sync branch, the run leaves it alone and warns. If nothing is pending any
+# more in a category (e.g. upstream reverted), its open PR is closed.
 #
 # Token: GITHUB_TOKEN by default. Repo setting needed for that: Settings > Actions > General >
 # "Allow GitHub Actions to create and approve pull requests". PRs pushed with GITHUB_TOKEN don't
@@ -25,16 +28,29 @@ on:
         type: boolean
         default: false
 permissions: {}
-concurrency:
-  group: upstream-sync
-  cancel-in-progress: false
 env:
-  BRANCH: upstream-sync
   BOT_NAME: github-actions[bot]
   BOT_EMAIL: 41898283+github-actions[bot]@users.noreply.github.com
 jobs:
   sync:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: skills
+            branch: upstream-sync
+            title: 'chore(skills): upstream skill updates'
+          - kind: deps
+            branch: deps-sync
+            title: 'chore(deps): bump pinned tool versions'
+    concurrency:
+      group: upstream-sync-${{ matrix.kind }}
+      cancel-in-progress: false
+    env:
+      KIND: ${{ matrix.kind }}
+      BRANCH: ${{ matrix.branch }}
+      TITLE: ${{ matrix.title }}
     permissions:
       contents: write
       pull-requests: write
@@ -53,14 +69,20 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
-      - name: Apply upstream updates
+      - name: Apply pending updates
         id: sync
-        run: python3 scripts/sync_upstream.py --apply --summary "$RUNNER_TEMP/pr-body.md" --github-output "$GITHUB_OUTPUT"
+        run: |
+          case "$KIND" in
+            skills) python3 scripts/sync_upstream.py --apply --summary "$RUNNER_TEMP/pr-body.md" --github-output "$GITHUB_OUTPUT" ;;
+            deps)   python3 scripts/pins.py --update --summary "$RUNNER_TEMP/pr-body.md" --github-output "$GITHUB_OUTPUT" ;;
+            *) echo "unknown kind $KIND"; exit 1 ;;
+          esac
       - name: Checks (as in check.yml)
         if: steps.sync.outputs.changed == 'true'
         run: |
           python3 scripts/build_skills_index.py
           python3 scripts/check_skill_versions.py HEAD
+          python3 scripts/pins.py --check
           npx -y @anthropic-ai/claude-code@2.1.332 plugin validate .
           npx -y @anthropic-ai/claude-code@2.1.332 plugin validate . --profile directory
       - name: Push the branch and open or update the PR
@@ -80,10 +102,10 @@ jobs:
           if g fetch -q origin "refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null; then remote=true; fi
 
           if [ "$CHANGED" != true ]; then
-            echo "No pending upstream updates."
+            echo "No pending $KIND updates."
             if [ -n "$pr" ] && [ "$DRY_RUN" != true ]; then
               gh pr close -R "$REPO" "$pr" --delete-branch \
-                --comment "Closing: no upstream updates are pending any more (merged elsewhere or reverted upstream)."
+                --comment "Closing: no $KIND updates are pending any more (merged elsewhere or reverted upstream)."
             fi
             exit 0
           fi
@@ -99,8 +121,8 @@ jobs:
           fi
 
           git checkout -q -B "$BRANCH"
-          git add -A skills
-          { printf 'chore(skills): sync upstream skill updates\n\n'; cat "$BODY"; } > "$RUNNER_TEMP/msg.txt"
+          git add -A skills skill-pins.json
+          { printf '%s\n\n' "$TITLE"; cat "$BODY"; } > "$RUNNER_TEMP/msg.txt"
           git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -q -F "$RUNNER_TEMP/msg.txt"
           if [ "$remote" = true ] && git diff --quiet "origin/$BRANCH" HEAD; then
             echo "Branch already holds these updates."
@@ -111,5 +133,5 @@ jobs:
             gh pr edit -R "$REPO" "$pr" --body-file "$BODY"
           else
             gh pr create -R "$REPO" --base main --head "$BRANCH" \
-              --title "chore(skills): upstream skill updates" --body-file "$BODY"
+              --title "$TITLE" --body-file "$BODY"
           fi

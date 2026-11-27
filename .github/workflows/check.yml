@@ -26,3 +26,5 @@ jobs:
           # The commit to compare with: the PR base, else the commit before this push.
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python3 scripts/check_skill_versions.py "$BASE"
+      - name: Tool pins applied (skill-pins.json)
+        run: python3 scripts/pins.py --check

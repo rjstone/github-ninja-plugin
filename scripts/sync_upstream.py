@@ -15,7 +15,9 @@ Applying an update to skills/<name>/:
 - replace the folder with upstream's, keeping our LICENSE.txt name (refreshed from upstream's
   root LICENSE file at the new commit);
 - re-add our metadata block: `upstream` pinned to the new commit, `version` bumped from ours
-  (minor when files were added or removed, else patch).
+  (minor when files were added or removed, else patch);
+- re-apply the skill's tool pins from skill-pins.json (scripts/pins.py). Pins don't count as
+  local edits when checking for drift.
 
 Upstream content is only copied, never executed. Standard library plus the git CLI.
 """
@@ -27,6 +29,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pins as pinlib  # noqa: E402
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKILLS = os.path.join(REPO_ROOT, "skills")
@@ -114,7 +119,7 @@ def tree_id(clone, rev, path):
     return git("rev-parse", "--verify", "-q", "%s:%s" % (rev, path), cwd=clone, check=False) or None
 
 
-def folder_matches_upstream(local_dir, clone, rev, path):
+def folder_matches_upstream(local_dir, clone, rev, path, pins=()):
     """True when our folder (minus our own files and the metadata block) equals upstream at rev."""
     up = tree_files(clone, rev, path)
     mine = set()
@@ -130,6 +135,7 @@ def folder_matches_upstream(local_dir, clone, rev, path):
         theirs = git("show", "%s:%s/%s" % (rev, path, rel), cwd=clone)
         with open(os.path.join(local_dir, rel), encoding="utf-8", errors="replace") as f:
             local = f.read().strip()
+        theirs, _ = pinlib.pin_text(theirs, pins, rel)
         if rel == "SKILL.md":
             local = strip_our_meta(local)
             theirs = strip_our_meta(theirs)
@@ -199,6 +205,7 @@ def main(argv=None):
         owner, repo, sha, path = m.groups()
         skills[name] = dict(version=version, owner=owner, repo=repo, sha=sha, path=path)
 
+    all_pins = pinlib.load()
     updates, notes = [], []
     with tempfile.TemporaryDirectory() as tmp:
         for key in sorted({(s["owner"], s["repo"]) for s in skills.values()}):
@@ -233,7 +240,8 @@ def main(argv=None):
                 minor = before != after
                 version = bump(s["version"], minor)
                 local_dir = os.path.join(SKILLS, name)
-                drift = old is not None and not folder_matches_upstream(local_dir, clone, s["sha"], s["path"])
+                drift = old is not None and not folder_matches_upstream(
+                    local_dir, clone, s["sha"], s["path"], all_pins.get(name, []))
                 print("%s: update %s -> %s (%s -> %s)%s" % (
                     name, s["sha"][:7], head[:7], s["version"], version, ", LOCAL EDITS" if drift else ""))
                 updates.append(dict(name=name, label=label, old=s["sha"], new=head, date=date,
@@ -253,6 +261,10 @@ def main(argv=None):
                         updates[-1]["license_changed"] = True
                 upstream = "https://github.com/%s/tree/%s/%s" % (label, head, s["path"])
                 set_meta(os.path.join(local_dir, "SKILL.md"), version, upstream)
+                missing = pinlib.apply_pins(name, local_dir, all_pins)
+                if missing:
+                    updates[-1]["pin_missing"] = [m["repo"] for m in missing]
+                    print("::error::%s: a tool pin matches nothing after the update" % name)
 
     if a.summary:
         with open(a.summary, "w", encoding="utf-8") as f:
@@ -282,6 +294,10 @@ def render_summary(updates, notes):
                 extra.append("removed: " + ", ".join("`%s`" % x for x in u["removed"]))
             if u.get("license_changed"):
                 extra.append("**upstream LICENSE text changed: check it still allows copying**")
+            if u.get("pin_missing"):
+                extra.append("**tool pin no longer matches (upstream reworded the install line): "
+                             "fix skill-pins.json before merging; CI fails until then**: "
+                             + ", ".join(u["pin_missing"]))
             if u["drift"]:
                 extra.append("**our copy differed from upstream at the old commit (local edits?): "
                              "they were overwritten; re-apply them if still wanted and list them in NOTICE**")
