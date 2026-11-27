@@ -1,8 +1,8 @@
 ---
 name: github-pages
-description: 'Publish and troubleshoot a GitHub Pages site. Use when asked to host a static site, docs or demo on GitHub Pages, choose between deploying from a branch and deploying with GitHub Actions, write or fix a Pages deploy workflow, enable or configure Pages through the API, set up a custom domain, DNS and HTTPS, or debug a Pages 404, missing CSS, or a build that does not show up.'
+description: 'Use when asked to host a static site, docs or demo on GitHub Pages, choose between deploying from a branch and deploying with GitHub Actions, write or fix a Pages deploy workflow, enable or configure Pages through the API, set up a custom domain, DNS and HTTPS, or debug a Pages 404, missing CSS, or a build that does not show up.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # GitHub Pages

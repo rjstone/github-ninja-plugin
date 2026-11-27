@@ -1,8 +1,8 @@
 ---
 name: github-apps
-description: 'Create, configure and authenticate GitHub Apps. Use when a workflow or service needs a token that outlives or outranks GITHUB_TOKEN (cross-repo access, pushes that must trigger other workflows, dispatching workflows in another repo), when choosing between a GitHub App, a personal access token and GITHUB_TOKEN, when minting installation tokens in Actions or code, when verifying GitHub webhooks, or when rotating or storing an App private key.'
+description: 'Use when a workflow or service needs a token that outlives or outranks GITHUB_TOKEN (cross-repo access, pushes that must trigger other workflows, dispatching workflows in another repo), when choosing between a GitHub App, a personal access token and GITHUB_TOKEN, when minting installation tokens in Actions or code, when verifying GitHub webhooks, or when rotating or storing an App private key.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # GitHub Apps
@@ -106,8 +106,9 @@ GH_TOKEN=$token gh api "repos/$OWNER/$REPO"
 In application code, use the platform's maintained library (Octokit's App auth in JS,
 `PyGithub`/`githubkit` in Python) instead of hand-rolling JWTs.
 
-A JWT must be sent as `Authorization: Bearer`. Since 2026-04-27 new installation tokens use a
-longer stateless format (`ghs_` plus more than 40 characters): never assume a fixed token length.
+A JWT must be sent as `Authorization: Bearer`. Installation tokens start with `ghs_`, but their
+length is not fixed and GitHub has changed token formats before: never validate or store them by
+length.
 
 ## 5. Webhooks
 
@@ -140,6 +141,17 @@ def valid(secret: bytes, body: bytes, header: str | None) -> bool:
   the hour), then generate a new one.
 - Review installations and permissions now and then; remove the App from repos it no longer
   needs. Changing an App's permissions asks each installation owner to approve the change.
+
+## Common mistakes
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `401` "JWT could not be decoded" or "'Expiration time' claim is too far in the future" | `exp` more than 10 minutes ahead, or the local clock is ahead of GitHub's | Keep `exp` under 10 minutes; backdate `iat` by 60 seconds |
+| `401` or `404` on `/app/...` or `/repos/{owner}/{repo}/installation` | An installation token sent where a JWT is needed | `/app/...` and the installation lookup take the JWT; everything else takes the installation token |
+| `404` on `/repos/{owner}/{repo}/installation` with a valid JWT | The App isn't installed on that repository | Install it there (App settings > Install App) |
+| `403` "Resource not accessible by integration" | The App lacks that permission, or the token was narrowed below it | Add the permission to the App, then have the installation owner accept the change |
+| The push worked but no workflow ran | The push used `GITHUB_TOKEN` | Push with the App's installation token |
+| Every webhook signature check fails | The body was parsed or re-serialized before the check, or the wrong secret is used | Check the raw bytes first, with the App's webhook secret |
 
 ## Related skills
 
