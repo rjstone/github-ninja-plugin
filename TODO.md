@@ -47,7 +47,5 @@ These would be our own text, so they get a closer review than copied skills, and
 
 ## Packaging
 
-- [ ] An icon: square PNG, 512-2048 px, at `.claude-plugin/icon.png` (clears the validator
-  warning).
 - [ ] opencode plugin package under `opencode/`, if the HTTP skill catalog isn't enough.
 - [ ] Codex manifest under `codex/`, only if Codex stops reading `.claude-plugin/plugin.json`.

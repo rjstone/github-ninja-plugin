@@ -5,6 +5,7 @@
   "author": {
     "name": "rjstone"
   },
+  "icon": "assets/icon.png",
   "homepage": "https://github.com/rjstone/github-ninja-plugin",
   "repository": "https://github.com/rjstone/github-ninja-plugin",
   "license": "MIT",

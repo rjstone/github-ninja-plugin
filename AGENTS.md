@@ -23,6 +23,9 @@ only skills; commands, agents or hooks may follow.
   - Code that only one harness can run (an opencode plugin package, a Codex manifest if Codex
     stops reading the Claude one) goes in a top-level folder named after that harness
     (`opencode/`, `codex/`).
+- The plugin icon is `assets/icon.png` (square PNG, 512-2048 px, under 2 MB; no SVG or WebP),
+  named by `"icon"` in `.claude-plugin/plugin.json`. The repo root is the plugin, so one copy
+  is enough.
 - Keep `README.md`'s skill table and install section in sync with `skills/` and the formats.
 
 ## Skills
