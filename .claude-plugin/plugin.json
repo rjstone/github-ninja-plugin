@@ -1,0 +1,12 @@
+{
+  "name": "github-ninja",
+  "version": "0.1.0",
+  "description": "GitHub know-how for coding agents: the gh CLI and API, GitHub Actions hardening, efficiency and runtime upgrades, Dependabot, secret scanning and CodeQL.",
+  "author": {
+    "name": "rjstone"
+  },
+  "homepage": "https://github.com/rjstone/github-ninja-plugin",
+  "repository": "https://github.com/rjstone/github-ninja-plugin",
+  "license": "MIT",
+  "keywords": ["github", "gh", "github-actions", "ci", "security", "dependabot", "codeql", "secret-scanning"]
+}

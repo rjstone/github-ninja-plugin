@@ -1,0 +1,28 @@
+# CI: plugin and marketplace validation, generated skill index up to date, skill version bumps.
+# Actions are pinned to commit SHAs (the version is in the comment).
+name: check
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Validate the marketplace and plugin
+        run: npx -y @anthropic-ai/claude-code@2.1.332 plugin validate .
+      - name: Validate the plugin against the plugin directory's checks
+        run: npx -y @anthropic-ai/claude-code@2.1.332 plugin validate . --profile directory
+      - name: skills/index.json is up to date
+        run: python3 scripts/build_skills_index.py --check
+      - name: Changed skills bumped metadata.version
+        env:
+          # The commit to compare with: the PR base, else the commit before this push.
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python3 scripts/check_skill_versions.py "$BASE"

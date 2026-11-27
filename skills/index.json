@@ -1,0 +1,81 @@
+{
+  "skills": [
+    {
+      "name": "codeql",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/alert-management.md",
+        "references/cli-commands.md",
+        "references/compiled-languages.md",
+        "references/sarif-output.md",
+        "references/troubleshooting.md",
+        "references/workflow-configuration.md"
+      ]
+    },
+    {
+      "name": "dependabot",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/dependabot-yml-reference.md",
+        "references/example-configs.md",
+        "references/pr-commands.md"
+      ]
+    },
+    {
+      "name": "gh",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "github-actions-efficiency",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/actions.md",
+        "references/patterns.md",
+        "references/reporting.md",
+        "references/review-rubric.md"
+      ]
+    },
+    {
+      "name": "github-actions-hardening",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/injection.md",
+        "references/permissions-and-tokens.md",
+        "references/report-format.md",
+        "references/supply-chain.md",
+        "references/triggers-and-privilege.md"
+      ]
+    },
+    {
+      "name": "github-actions-runtime-upgrade-conventions",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "secret-scanning",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/alerts-and-remediation.md",
+        "references/custom-patterns.md",
+        "references/push-protection.md"
+      ]
+    }
+  ]
+}
