@@ -2,32 +2,43 @@
 
 Open work for github-ninja. Done items are removed (the history is in git and `CHANGELOG.md`).
 
-## New skills (our own; nothing suitable exists upstream)
+## Coverage gaps (2026-11-27)
 
-A search of skills.sh (2026-11-27) found no general skill for either topic worth copying.
-These would be our own text, so they get a closer review than copied skills, and they carry no
-`metadata.upstream` (the upstream sync skips them).
+GitHub features no skill covers yet, roughly by how often an agent meets them. For each, first
+search upstream (github/awesome-copilot, skills.sh) for a skill worth copying; write our own
+only if none fits (see AGENTS.md, "Skills written here").
 
-- [ ] **`github-pages`**: publishing a site with GitHub Pages.
-  - choose between deploying from a branch and deploying from Actions, and when each fits;
-  - the official Actions flow (`actions/configure-pages`, `actions/upload-pages-artifact`,
-    `actions/deploy-pages`), pinned by commit SHA, with the `pages: write` and
-    `id-token: write` permissions and the `github-pages` environment;
-  - enabling and configuring Pages with `gh api` (`repos/{owner}/{repo}/pages`);
-  - custom domains: `CNAME`, DNS records, domain verification, enforcing HTTPS;
-  - Jekyll vs `.nojekyll`, base paths for project sites, and common 404 causes.
-  - Existing narrow skills, for reference only: `github/awesome-copilot@publish-to-pages`
-    (converting slides and PDFs to a site), `aviz85/claude-skills-library@gh-pages-deploy`
-    (no licence: don't copy).
-- [ ] **`github-apps`**: building and using GitHub Apps.
-  - when an App beats a personal access token or `GITHUB_TOKEN`;
-  - creating an App (settings page or manifest flow), choosing the smallest permissions and
-    events, installing it on chosen repos;
-  - installation tokens: `actions/create-github-app-token` in workflows (pinned by SHA, with
-    `client-id`), and JWT-to-installation-token exchange in code;
-  - webhooks: payload verification with `X-Hub-Signature-256`, redelivery;
-  - private key handling: Actions secrets, rotation, never in the repo;
-  - this project's own use (the marketplace notify App) as a worked example.
+Big gaps (everyday agent work):
+- [ ] **Pull requests and code review**: reviews and inline comments, suggested changes, draft
+  and ready, auto-merge, merge methods, merge queue, `CODEOWNERS`.
+- [ ] **Rulesets and branch protection**: required checks and reviews, bypass lists, tag
+  protection, why a merge is blocked. (`netresearch` github-project was rejected for its
+  licence, not its topic.)
+- [ ] **Releases and tags**: `gh release`, generated notes, assets, immutable releases,
+  release-triggered workflows. Build on git-cliff (awesome-copilot `github-release` clashes).
+
+Medium gaps (Actions and platform depth):
+- [ ] **Writing actions and reusable workflows**: `workflow_call`, composite, JavaScript and
+  Docker actions, matrix strategy, Marketplace publishing.
+- [ ] **Deployments, environments and OIDC to clouds**: environment secrets and protection
+  rules, required reviewers, keyless OIDC to AWS, Azure and GCP.
+- [ ] **Packages and the container registry (GHCR)**: publishing images and npm packages with
+  `GITHUB_TOKEN`, visibility, linking to a repo.
+- [ ] **Artifact attestations and supply-chain metadata**: `actions/attest-build-provenance`,
+  `gh attestation verify`, SBOM export, the dependency-review action.
+- [ ] **Security advisories**: repository advisories, private vulnerability reporting, CVE
+  requests, `SECURITY.md`.
+
+Smaller or niche:
+- [ ] **Projects (v2)**: `gh project`, custom fields, automation, GraphQL.
+- [ ] **Codespaces and dev containers**: `devcontainer.json`, prebuilds, secrets.
+- [ ] **GraphQL API**: pagination, rate-limit cost, when to prefer it over REST (check what
+  `gh` already covers).
+- [ ] **Discussions, wikis, gists** (low value for agents).
+- [ ] **Organization and enterprise administration**: teams, roles, SSO, audit log (risky for
+  agents to act on).
+- [ ] **Copilot-side features**: coding agent, custom instructions, Copilot code review,
+  GitHub Models (overlaps issue #1).
 
 ## To decide
 
