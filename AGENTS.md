@@ -37,6 +37,13 @@ only skills; commands, agents or hooks may follow.
   repo, commit and folder in `NOTICE`. Only copy from repos whose licence allows it (MIT,
   Apache-2.0, ...). List any local edit to a copied skill in `NOTICE`. Before adding, read the
   whole skill: no hidden instructions, no `curl | sh`, no unexpected hosts.
+- **Skills written here** (`github-pages`, `github-apps`): only for a topic with no upstream
+  skill worth copying. They are MIT under the repo's `LICENSE`, so they have no `LICENSE.txt`,
+  `metadata.upstream` or `NOTICE` entry, and the upstream sync skips them. Before merging a
+  new one or a large change, test it the superpowers `writing-skills` way: give the same tasks
+  to a subagent with and without the skill, keep only what fixes a failure seen without it, and
+  re-test after the fixes. Look up the newest release of every action a skill pins, and pin it
+  by commit SHA with the date checked (no tool updates these pins).
 - **Updating from upstream** is automated: `.github/workflows/upstream-sync.yml` (daily, or by
   hand) runs `scripts/sync_upstream.py --apply`, which compares each skill's upstream folder at
   its pinned commit with upstream's default branch and, for each changed one, copies the new
