@@ -134,6 +134,16 @@
       ]
     },
     {
+      "name": "repo-security-posture",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/checks.md",
+        "scripts/collect.py"
+      ]
+    },
+    {
       "name": "secret-scanning",
       "version": "1.0.0",
       "files": [

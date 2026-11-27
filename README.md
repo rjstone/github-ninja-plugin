@@ -21,6 +21,7 @@ may follow.
 | `conventional-branch` | Branch names per the Conventional Branch spec (`feature/`, `bugfix/`, agent prefixes such as `claude/`) | github/awesome-copilot |
 | `rebase-current-branch` | Safely rebasing the current branch onto the default branch (no auto-stash, no reset, no push) | github/awesome-copilot |
 | `npm-trusted-publishing` | npm trusted publishing (OIDC) from Actions instead of `NPM_TOKEN` | github/awesome-copilot |
+| `repo-security-posture` | Auditing a repo's security settings and hardening gaps (branch protection, CODEOWNERS, Actions, release integrity, collaborator access, security features), as ranked fixes tied to attack scenarios; its collector script only reads (GitHub API GETs) | [superagent-ai/skills](https://github.com/superagent-ai/skills) |
 | `gh-attach` | Uploading screenshots and files to PRs, issues and comments, and downloading attachments, with the `gh attach` extension | [sudosubin/gh-attach](https://github.com/sudosubin/gh-attach) |
 
 The skills are copied from their upstream repositories (all MIT; see

@@ -19,6 +19,9 @@ github/awesome-copilot (MIT, Copyright GitHub, Inc.)
 cli/cli (MIT, Copyright (c) 2019 GitHub Inc.)
   skills/gh
 
+superagent-ai/skills (MIT, Copyright (c) 2026 Superagent)
+  skills/repo-security-posture
+
 sudosubin/gh-attach (MIT, Copyright (c) 2026 Subin Kim)
   skills/gh-attach
 
