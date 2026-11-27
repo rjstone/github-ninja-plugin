@@ -100,6 +100,13 @@
       ]
     },
     {
+      "name": "github-apps",
+      "version": "0.1.0",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
       "name": "github-issues",
       "version": "1.0.0",
       "files": [
@@ -115,6 +122,13 @@
         "references/search.md",
         "references/sub-issues.md",
         "references/templates.md"
+      ]
+    },
+    {
+      "name": "github-pages",
+      "version": "0.1.0",
+      "files": [
+        "SKILL.md"
       ]
     },
     {

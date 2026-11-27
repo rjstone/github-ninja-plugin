@@ -8,7 +8,7 @@ A search of skills.sh (2026-11-27) found no general skill for either topic worth
 These would be our own text, so they get a closer review than copied skills, and they carry no
 `metadata.upstream` (the upstream sync skips them).
 
-- [ ] **`github-pages`**: publishing a site with GitHub Pages.
+- [ ] **`github-pages`** (draft on branch `draft/pages-apps-skills`, v0.1.0; review, then merge): publishing a site with GitHub Pages.
   - choose between deploying from a branch and deploying from Actions, and when each fits;
   - the official Actions flow (`actions/configure-pages`, `actions/upload-pages-artifact`,
     `actions/deploy-pages`), pinned by commit SHA, with the `pages: write` and
@@ -19,7 +19,7 @@ These would be our own text, so they get a closer review than copied skills, and
   - Existing narrow skills, for reference only: `github/awesome-copilot@publish-to-pages`
     (converting slides and PDFs to a site), `aviz85/claude-skills-library@gh-pages-deploy`
     (no licence: don't copy).
-- [ ] **`github-apps`**: building and using GitHub Apps.
+- [ ] **`github-apps`** (draft on branch `draft/pages-apps-skills`, v0.1.0; review, then merge): building and using GitHub Apps.
   - when an App beats a personal access token or `GITHUB_TOKEN`;
   - creating an App (settings page or manifest flow), choosing the smallest permissions and
     events, installing it on chosen repos;
