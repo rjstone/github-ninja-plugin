@@ -2,7 +2,7 @@
 name: github-pages
 description: 'Use when asked to host a static site, docs or demo on GitHub Pages, choose between deploying from a branch and deploying with GitHub Actions, write or fix a Pages deploy workflow, enable or configure Pages through the API, set up a custom domain, DNS and HTTPS, or debug a Pages 404, missing CSS, or a build that does not show up.'
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # GitHub Pages
@@ -39,7 +39,7 @@ gh api -X POST repos/{owner}/{repo}/pages -f build_type=workflow
 gh api -X POST repos/{owner}/{repo}/pages \
   -f 'source[branch]=main' -f 'source[path]=/docs'
 
-# Switch an existing site to Actions
+# Pages already on (the POST returns 409): switch it to Actions
 gh api -X PUT repos/{owner}/{repo}/pages -f build_type=workflow
 ```
 
@@ -70,8 +70,10 @@ jobs:
           persist-credentials: false
       - id: pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-      # Build here. Pass the base path to your generator, e.g.
-      #   npm ci && npm run build -- --base "${{ steps.pages.outputs.base_path }}/"
+      # Build here. Pass the base path to your generator through env:, e.g.
+      # - run: npm ci && npm run build -- --base "$BASE_PATH/"
+      #   env:
+      #     BASE_PATH: ${{ steps.pages.outputs.base_path }}   # "/<repo>", or "" on a custom domain
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./dist        # the folder holding index.html; the default is _site/
@@ -105,7 +107,8 @@ anyone else from claiming it for their Pages site (domain takeover).
 | `www.example.com` or another subdomain | `CNAME` to `<owner>.github.io` (no repo name) |
 | `example.com` (apex) | `A`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`; optional `AAAA`: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`; or an `ALIAS`/`ANAME` to `<owner>.github.io` |
 
-Set up both the apex and `www`: Pages then redirects between them.
+Set up both the apex and `www`: Pages then redirects the other one to the name you set as `cname`
+below, which becomes the canonical address.
 
 Then set the domain on the repo:
 
@@ -129,9 +132,9 @@ Check DNS with `dig +short www.example.com CNAME` and `dig +short example.com A`
 |---|---|---|
 | 404 on the whole site | Pages not enabled, wrong source folder, or no `index.html` at the artifact or folder root | Check step 2's `gh api` output and the artifact `path` |
 | Page loads without CSS or JS, or links 404 | Project site served under `/<repo>/` but assets use `/` | Set the generator's base path (from `configure-pages`' `base_path` output) |
-| Files or folders starting with `_` are missing (branch source) | GitHub's Jekyll build drops them | Add an empty `.nojekyll` file at the source root, or use the Actions source |
+| Files or folders starting with `_` are missing (branch source) | GitHub's Jekyll build drops them | Add an empty `.nojekyll` file at the source root (publish tools such as the `gh-pages` npm package skip dotfiles unless told not to), or use the Actions source |
 | A push didn't update the site | The deploy failed, or the browser or CDN cache | Read the latest `pages` workflow run (or "pages build and deployment" for the branch source); hard-reload |
-| Deploy job: "Branch is not allowed to deploy" | `github-pages` environment branch rules | Allow the branch in **Settings > Environments > github-pages** |
+| Deploy job: "Branch is not allowed to deploy" | `github-pages` environment branch rules | Allow the branch in **Settings > Environments > github-pages**, or `gh api -X POST repos/{owner}/{repo}/environments/github-pages/deployment-branch-policies -f name=<branch>` (needs custom branch policies on that environment) |
 | Custom domain shows "improperly configured" | DNS not pointing at Pages yet, or a conflicting record | Fix the records in step 4; remove other `A`/`AAAA`/`CNAME` records for that name |
 | "Enforce HTTPS" is unavailable | Certificate not issued yet | Wait for DNS to settle; remove and re-add the custom domain to retry |
 | Case-sensitive 404 (`About.html` vs `about.html`) | Pages paths are case-sensitive | Match link case to file names |

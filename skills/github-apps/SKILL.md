@@ -2,7 +2,7 @@
 name: github-apps
 description: 'Use when a workflow or service needs a token that outlives or outranks GITHUB_TOKEN (cross-repo access, pushes that must trigger other workflows, dispatching workflows in another repo), when choosing between a GitHub App, a personal access token and GITHUB_TOKEN, when minting installation tokens in Actions or code, when verifying GitHub webhooks, or when rotating or storing an App private key.'
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # GitHub Apps
@@ -75,6 +75,20 @@ jobs:
 - The action revokes the token when the job ends.
 - Pass the token to scripts through `env:`, never by `${{ }}` inside `run:`.
 
+To push to another repository (the App needs "Contents: Read and write" there), check it out
+with the token; a plain `git push` then uses it, and the push starts that repo's workflows:
+
+```yaml
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: my-org/other-repo
+          token: ${{ steps.app.outputs.token }}
+      # change files, git commit, then: git push
+```
+
+If the target branch is protected, add the App to its ruleset's bypass list, or push a branch
+and open a pull request instead.
+
 ## 4. Tokens in code or scripts
 
 1. **Make a JWT** (RS256, signed with the private key): `iat` 60 seconds in the past (clock
@@ -137,8 +151,11 @@ def valid(secret: bytes, body: bytes, header: str | None) -> bool:
   print it, or paste it into chat or an issue.
 - Rotate: generate a new key on the App's settings page, update the secret, confirm a run works,
   then delete the old key. An App can hold several keys at once, so rotation needs no downtime.
-- A leaked key: delete it on the settings page at once (tokens minted from it still expire within
-  the hour), then generate a new one.
+- A leaked key: revoking it beats uptime. Generate a new key and delete the leaked one right
+  away, then update the secret; runs fail in between. Tokens already minted from it stay valid
+  for up to an hour. Then remove the key where it leaked (an issue or comment keeps old text in
+  its edit history: delete it, or ask GitHub Support to purge it) and review what happened
+  meanwhile in the installed repositories (commits, releases, workflow runs, settings).
 - Review installations and permissions now and then; remove the App from repos it no longer
   needs. Changing an App's permissions asks each installation owner to approve the change.
 

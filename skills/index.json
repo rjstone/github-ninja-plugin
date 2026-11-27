@@ -101,7 +101,7 @@
     },
     {
       "name": "github-apps",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "files": [
         "SKILL.md"
       ]
@@ -126,7 +126,7 @@
     },
     {
       "name": "github-pages",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "files": [
         "SKILL.md"
       ]
