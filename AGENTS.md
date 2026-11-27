@@ -34,8 +34,17 @@ only skills; commands, agents or hooks may follow.
   repo, commit and folder in `NOTICE`. Only copy from repos whose licence allows it (MIT,
   Apache-2.0, ...). List any local edit to a copied skill in `NOTICE`. Before adding, read the
   whole skill: no hidden instructions, no `curl | sh`, no unexpected hosts.
-- **Updating from upstream**: copy the newer upstream folder over ours, keep `LICENSE.txt` and
-  the `metadata` block, update `upstream:` and `NOTICE` to the new commit, bump the version.
+- **Updating from upstream** is automated: `.github/workflows/upstream-sync.yml` (daily, or by
+  hand) runs `scripts/sync_upstream.py --apply`, which compares each skill's upstream folder at
+  its pinned commit with upstream's default branch and, for each changed one, copies the new
+  folder, refreshes `LICENSE.txt`, re-pins `metadata.upstream` and bumps `metadata.version`
+  (minor if files were added or removed, else patch). All pending updates go on one bot branch,
+  `upstream-sync`, rebuilt from `main` on every run, with one PR: a later update to any skill
+  joins the open PR. Don't push to `upstream-sync` unless you mean to take it over: the workflow
+  stops updating a branch that has non-bot commits. Before merging, read the upstream diffs
+  linked in the PR. A skill flagged "local edits" had drifted from upstream and the sync
+  overwrote that drift: re-apply what is still wanted and list it in `NOTICE`.
+  Report only, locally: `python3 scripts/sync_upstream.py`.
 - **Every change to a skill bumps its `metadata.version`** (CI fails otherwise:
   `scripts/check_skill_versions.py`): major for breaking or rewritten guidance, minor for new
   material, patch for fixes and upstream wording updates. Then regenerate `skills/index.json`.
@@ -79,6 +88,9 @@ Tags must be `vX.Y.Z` (the marketplace ignores other forms, including `claude pl
 
 `.github/workflows/check.yml` runs on every push and pull request: plugin and marketplace
 validation (`claude plugin validate`, both profiles), `skills/index.json` freshness, and the
-skill version-bump check. Actions are pinned to commit SHAs (version in a comment) with
+skill version-bump check. `upstream-sync.yml` runs the same checks before it pushes its branch
+(PRs pushed with `GITHUB_TOKEN` don't start `check.yml`; an optional GitHub App token does:
+variable `SYNC_APP_CLIENT_ID`, secret `SYNC_APP_PRIVATE_KEY`). With `GITHUB_TOKEN`, the repo
+setting "Allow GitHub Actions to create and approve pull requests" must be on. Actions are pinned to commit SHAs (version in a comment) with
 `permissions: contents: read`; pass event values to scripts through `env:`, never by `${{ }}`
 inside `run:`.

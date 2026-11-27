@@ -16,9 +16,10 @@ may follow.
 | `secret-scanning` | Secret scanning, push protection, custom patterns, alert remediation | github/awesome-copilot |
 | `codeql` | CodeQL code scanning through Actions and the CodeQL CLI | github/awesome-copilot |
 
-The skills are copied from their upstream repositories (both MIT, GitHub, Inc.) at the commits
-listed in [NOTICE](NOTICE) and in each skill's `metadata.upstream`. Each copied skill folder keeps
-its upstream licence as `LICENSE.txt`.
+The skills are copied from their upstream repositories (both MIT, GitHub, Inc.; see
+[NOTICE](NOTICE)), each pinned to an upstream commit in its `metadata.upstream`. Each copied
+skill folder keeps its upstream licence as `LICENSE.txt`. A daily workflow opens (or updates) a
+single PR when upstream changes any of them, much like Dependabot.
 
 ## Install
 

@@ -1,0 +1,115 @@
+# Upstream skill updates, Dependabot-style: one branch (upstream-sync) and one PR for all skills.
+#
+# Each run rebuilds upstream-sync from main plus every pending upstream update
+# (scripts/sync_upstream.py --apply), runs the same checks as check.yml, then force-pushes the
+# branch and opens the PR or refreshes its description. A later update to any skill therefore
+# lands in the same open PR. If someone pushed their own commits to upstream-sync, the run leaves
+# the branch alone and warns. If nothing is pending any more (e.g. upstream reverted), an open
+# sync PR is closed.
+#
+# Token: GITHUB_TOKEN by default. Repo setting needed for that: Settings > Actions > General >
+# "Allow GitHub Actions to create and approve pull requests". PRs pushed with GITHUB_TOKEN don't
+# start other workflows, so check.yml won't run on them (this workflow runs the checks itself).
+# Optional: set the variable SYNC_APP_CLIENT_ID and secret SYNC_APP_PRIVATE_KEY for a GitHub App
+# with "Contents" and "Pull requests" read/write on this repo; its pushes do start check.yml.
+#
+# Upstream content is copied as data, never executed. Actions are pinned to commit SHAs.
+name: upstream-sync
+on:
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Only report pending updates (no push, no PR)
+        type: boolean
+        default: false
+permissions: {}
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+env:
+  BRANCH: upstream-sync
+  BOT_NAME: github-actions[bot]
+  BOT_EMAIL: 41898283+github-actions[bot]@users.noreply.github.com
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc # v3.4.0
+        id: app
+        if: vars.SYNC_APP_CLIENT_ID != ''
+        with:
+          client-id: ${{ vars.SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Apply upstream updates
+        id: sync
+        run: python3 scripts/sync_upstream.py --apply --summary "$RUNNER_TEMP/pr-body.md" --github-output "$GITHUB_OUTPUT"
+      - name: Checks (as in check.yml)
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          python3 scripts/build_skills_index.py
+          python3 scripts/check_skill_versions.py HEAD
+          npx -y @anthropic-ai/claude-code@2.1.332 plugin validate .
+          npx -y @anthropic-ai/claude-code@2.1.332 plugin validate . --profile directory
+      - name: Push the branch and open or update the PR
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token || github.token }}
+          REPO: ${{ github.repository }}
+          CHANGED: ${{ steps.sync.outputs.changed }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          BODY: ${{ runner.temp }}/pr-body.md
+        run: |
+          set -euo pipefail
+          cat "$BODY" >> "$GITHUB_STEP_SUMMARY"
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          g() { git -c "http.https://github.com/.extraheader=$auth" "$@"; }
+          pr=$(gh pr list -R "$REPO" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          remote=false
+          if g fetch -q origin "refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null; then remote=true; fi
+
+          if [ "$CHANGED" != true ]; then
+            echo "No pending upstream updates."
+            if [ -n "$pr" ] && [ "$DRY_RUN" != true ]; then
+              gh pr close -R "$REPO" "$pr" --delete-branch \
+                --comment "Closing: no upstream updates are pending any more (merged elsewhere or reverted upstream)."
+            fi
+            exit 0
+          fi
+          if [ "$DRY_RUN" = true ]; then echo "Dry run: not pushing."; git status --short; exit 0; fi
+
+          # Never overwrite commits a person added to the sync branch.
+          if [ "$remote" = true ]; then
+            others=$(git log --format='%ae' "origin/main..origin/$BRANCH" | grep -cvxF "$BOT_EMAIL" || true)
+            if [ "$others" -gt 0 ]; then
+              echo "::warning::$BRANCH has commits from someone other than the bot; not overwriting it. Merge or close PR #${pr:-?} first."
+              exit 0
+            fi
+          fi
+
+          git checkout -q -B "$BRANCH"
+          git add -A skills
+          { printf 'chore(skills): sync upstream skill updates\n\n'; cat "$BODY"; } > "$RUNNER_TEMP/msg.txt"
+          git -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" commit -q -F "$RUNNER_TEMP/msg.txt"
+          if [ "$remote" = true ] && git diff --quiet "origin/$BRANCH" HEAD; then
+            echo "Branch already holds these updates."
+          else
+            g push -q --force origin "HEAD:refs/heads/$BRANCH"
+          fi
+          if [ -n "$pr" ]; then
+            gh pr edit -R "$REPO" "$pr" --body-file "$BODY"
+          else
+            gh pr create -R "$REPO" --base main --head "$BRANCH" \
+              --title "chore(skills): upstream skill updates" --body-file "$BODY"
+          fi

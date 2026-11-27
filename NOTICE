@@ -1,9 +1,8 @@
 github-ninja bundles skills copied from these upstream repositories. Each copied skill folder
-keeps the upstream licence as LICENSE.txt; the exact source commit is also in each SKILL.md
-under metadata.upstream.
+keeps the upstream licence as LICENSE.txt. The exact upstream commit of each skill is in its
+SKILL.md under metadata.upstream (kept current by .github/workflows/upstream-sync.yml).
 
 github/awesome-copilot (MIT, Copyright GitHub, Inc.)
-  commit 93fc8b9ee3ef56b9b5e7261e6ce92d314cb2c1cf (2026-11-24)
   skills/github-actions-hardening
   skills/github-actions-efficiency
   skills/github-actions-runtime-upgrade-conventions
@@ -12,7 +11,6 @@ github/awesome-copilot (MIT, Copyright GitHub, Inc.)
   skills/codeql
 
 cli/cli (MIT, Copyright (c) 2019 GitHub Inc.)
-  commit aec38089147ae38264668843fa6126022c56a0e4 (2026-11-26)
   skills/gh
 
 Local changes to copied skills: a `metadata` block (version, upstream) added to each SKILL.md
