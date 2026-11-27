@@ -15,6 +15,14 @@
       ]
     },
     {
+      "name": "conventional-branch",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
       "name": "dependabot",
       "version": "1.0.0",
       "files": [
@@ -26,7 +34,32 @@
       ]
     },
     {
+      "name": "diagnose-ci-gate",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/validation.md"
+      ]
+    },
+    {
       "name": "gh",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "gh-attach",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "git-commit",
       "version": "1.0.0",
       "files": [
         "LICENSE.txt",
@@ -60,6 +93,40 @@
     },
     {
       "name": "github-actions-runtime-upgrade-conventions",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "github-issues",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md",
+        "references/dependencies.md",
+        "references/images.md",
+        "references/issue-fields.md",
+        "references/issue-types.md",
+        "references/labels.md",
+        "references/milestones.md",
+        "references/projects.md",
+        "references/search.md",
+        "references/sub-issues.md",
+        "references/templates.md"
+      ]
+    },
+    {
+      "name": "npm-trusted-publishing",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "rebase-current-branch",
       "version": "1.0.0",
       "files": [
         "LICENSE.txt",

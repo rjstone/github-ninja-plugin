@@ -1,0 +1,11 @@
+{
+  "gh-attach": [
+    {
+      "file": "SKILL.md",
+      "match": "gh extension install sudosubin/gh-attach(?: --pin \\S+)?",
+      "replace": "gh extension install sudosubin/gh-attach --pin {version}",
+      "repo": "sudosubin/gh-attach",
+      "version": "v0.5.1"
+    }
+  ]
+}

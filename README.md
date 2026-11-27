@@ -15,11 +15,24 @@ may follow.
 | `dependabot` | `dependabot.yml`, grouped and security updates, monorepos, auto-triage | github/awesome-copilot |
 | `secret-scanning` | Secret scanning, push protection, custom patterns, alert remediation | github/awesome-copilot |
 | `codeql` | CodeQL code scanning through Actions and the CodeQL CLI | github/awesome-copilot |
+| `github-issues` | Creating and managing issues: labels, milestones, issue types and fields, sub-issues and dependencies (GitHub MCP tools or `gh api`) | github/awesome-copilot |
+| `diagnose-ci-gate` | "Is this red check mine?": read the real log and first error, classify bug / flaky / environment / pipeline, recommend one action | github/awesome-copilot |
+| `git-commit` | Staging and committing (or splitting) changes with Conventional Commits messages, following the repo's own rules; no `--no-verify`, amend or push | github/awesome-copilot |
+| `conventional-branch` | Branch names per the Conventional Branch spec (`feature/`, `bugfix/`, agent prefixes such as `claude/`) | github/awesome-copilot |
+| `rebase-current-branch` | Safely rebasing the current branch onto the default branch (no auto-stash, no reset, no push) | github/awesome-copilot |
+| `npm-trusted-publishing` | npm trusted publishing (OIDC) from Actions instead of `NPM_TOKEN` | github/awesome-copilot |
+| `gh-attach` | Uploading screenshots and files to PRs, issues and comments, and downloading attachments, with the `gh attach` extension | [sudosubin/gh-attach](https://github.com/sudosubin/gh-attach) |
 
-The skills are copied from their upstream repositories (both MIT, GitHub, Inc.; see
+The skills are copied from their upstream repositories (all MIT; see
 [NOTICE](NOTICE)), each pinned to an upstream commit in its `metadata.upstream`. Each copied
 skill folder keeps its upstream licence as `LICENSE.txt`. A daily workflow opens (or updates) a
-single PR when upstream changes any of them, much like Dependabot.
+single PR when upstream changes any of them, much like Dependabot; tools a skill installs are
+pinned to a release (`skill-pins.json`) and bumped in a separate PR.
+
+**`gh-attach` note:** the skill installs the `gh attach` extension (pinned). For non-image
+files, GHES, and as a fallback, that tool reads your browser's GitHub `user_session` cookie (or
+`GH_ATTACH_SESSION_TOKEN`), which is a full account credential. Leave the skill unused, or
+uninstall the extension, if you don't want that.
 
 ## Install
 

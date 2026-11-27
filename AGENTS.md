@@ -45,6 +45,16 @@ only skills; commands, agents or hooks may follow.
   linked in the PR. A skill flagged "local edits" had drifted from upstream and the sync
   overwrote that drift: re-apply what is still wanted and list it in `NOTICE`.
   Report only, locally: `python3 scripts/sync_upstream.py`.
+- **Tool pins**: when a copied skill installs a tool (a `gh` extension, an npm package, ...),
+  pin it to a release in `skill-pins.json` instead of editing the skill by hand: a regex `match`
+  for upstream's install text, the `replace` text with `{version}`, the tool's `repo`, and the
+  pinned `version` tag. `python3 scripts/pins.py --apply` writes pins, `--check` (CI) verifies
+  them, `--update` moves them to the newest stable release. `sync_upstream.py` re-applies pins
+  after every upstream update, and a pin is not counted as a local edit. Pin binary (precompiled)
+  `gh` extensions to a release tag, the only form `gh extension install --pin` takes for them.
+  Tool bumps arrive in their own PR (`deps-sync` branch, `chore(deps): ...`), separate from
+  skill content updates (`upstream-sync` branch, `chore(skills): ...`); don't push to either
+  branch unless you mean to take it over.
 - **Every change to a skill bumps its `metadata.version`** (CI fails otherwise:
   `scripts/check_skill_versions.py`): major for breaking or rewritten guidance, minor for new
   material, patch for fixes and upstream wording updates. Then regenerate `skills/index.json`.

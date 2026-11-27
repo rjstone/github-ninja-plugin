@@ -1,12 +1,14 @@
 {
   "name": "github-ninja",
-  "owner": { "name": "rjstone" },
+  "owner": {
+    "name": "rjstone"
+  },
   "description": "Single-plugin marketplace for github-ninja. The plugin is the repository root; its skills live in skills/.",
   "plugins": [
     {
       "name": "github-ninja",
       "source": "./",
-      "description": "GitHub know-how for coding agents: the gh CLI and API, GitHub Actions hardening, efficiency and runtime upgrades, Dependabot, secret scanning and CodeQL."
+      "description": "GitHub know-how for coding agents: the gh CLI and API, issues, commits, branches and rebases, CI failure diagnosis, GitHub Actions hardening, efficiency and runtime upgrades, npm trusted publishing, Dependabot, secret scanning, CodeQL and file attachments."
     }
   ]
 }

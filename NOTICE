@@ -9,9 +9,20 @@ github/awesome-copilot (MIT, Copyright GitHub, Inc.)
   skills/dependabot
   skills/secret-scanning
   skills/codeql
+  skills/git-commit
+  skills/diagnose-ci-gate
+  skills/npm-trusted-publishing
+  skills/rebase-current-branch
+  skills/github-issues
+  skills/conventional-branch
 
 cli/cli (MIT, Copyright (c) 2019 GitHub Inc.)
   skills/gh
 
+sudosubin/gh-attach (MIT, Copyright (c) 2026 Subin Kim)
+  skills/gh-attach
+
 Local changes to copied skills: a `metadata` block (version, upstream) added to each SKILL.md
-frontmatter. Any further local edit is listed here.
+frontmatter, and tool version pins from skill-pins.json (scripts/pins.py), currently:
+  skills/gh-attach/SKILL.md: `gh extension install sudosubin/gh-attach` gets `--pin <tag>`.
+Any further local edit is listed here.
