@@ -30,6 +30,7 @@ may follow.
 | `github-pages` | Publishing with GitHub Pages: branch vs Actions source, the pinned deploy workflow, enabling Pages with `gh api`, custom domains, DNS and HTTPS, 404 and base-path troubleshooting | this repo |
 | `github-apps` | GitHub Apps: when to use one instead of a PAT or `GITHUB_TOKEN`, creating one, installation tokens in Actions and code (JWT), webhook signature checks, private key rotation | this repo |
 | `repo-badges` | README badges: GitHub status badges, shields.io static badges and logos (Simple Icons, svgl fallback), and badges rendered in CI with a pinned renderer onto an orphan `badges` branch, with no badge service | this repo |
+| `github-mcp-config` | Adding GitHub's official MCP server when a skill needs its tools and none is configured: check for an existing one, remote (PAT, or OAuth on Copilot hosts) vs local (OAuth without a token), per-harness token syntax, toolsets and read-only | this repo |
 | `gh-attach` | Uploading screenshots and files to PRs, issues and comments, and downloading attachments, with the `gh attach` extension | [sudosubin/gh-attach](https://github.com/sudosubin/gh-attach) |
 
 Most skills are copied from their upstream repositories (all MIT; see

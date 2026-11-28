@@ -125,6 +125,13 @@
       ]
     },
     {
+      "name": "github-mcp-config",
+      "version": "0.1.3",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
       "name": "github-pages",
       "version": "0.1.2",
       "files": [
