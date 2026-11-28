@@ -1,6 +1,6 @@
 {
   "name": "github-ninja",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "GitHub know-how for coding agents: the gh CLI and API, issues, commits, branches and rebases, CI failure diagnosis, GitHub Actions hardening, efficiency and runtime upgrades, repo security settings audits, npm trusted publishing, Dependabot, secret scanning, CodeQL and file attachments.",
   "author": {
     "name": "rjstone"
