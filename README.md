@@ -1,5 +1,10 @@
 # github-ninja
 
+[![check](https://raw.githubusercontent.com/rjstone/github-ninja-plugin/badges/check.svg)](https://github.com/rjstone/github-ninja-plugin/actions/workflows/check.yml)
+[![version](https://raw.githubusercontent.com/rjstone/github-ninja-plugin/badges/version.svg)](https://github.com/rjstone/github-ninja-plugin/releases)
+![license](https://raw.githubusercontent.com/rjstone/github-ninja-plugin/badges/license.svg)
+![skills](https://raw.githubusercontent.com/rjstone/github-ninja-plugin/badges/skills.svg)
+
 GitHub know-how for coding agents, packaged once and installable in several agent harnesses.
 Today it is a bundle of [Agent Skills](https://agentskills.io); commands and other components
 may follow.

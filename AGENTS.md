@@ -111,6 +111,16 @@ validation (`claude plugin validate`, both profiles), `skills/index.json` freshn
 skill version-bump check. `upstream-sync.yml` runs the same checks before it pushes its branch
 (PRs pushed with `GITHUB_TOKEN` don't start `check.yml`; an optional GitHub App token does:
 variable `SYNC_APP_CLIENT_ID`, secret `SYNC_APP_PRIVATE_KEY`). With `GITHUB_TOKEN`, the repo
-setting "Allow GitHub Actions to create and approve pull requests" must be on. Actions are pinned to commit SHAs (version in a comment) with
+setting "Allow GitHub Actions to create and approve pull requests" must be on.
+
+README badges are SVG files on the orphan branch `badges`
+(`https://raw.githubusercontent.com/rjstone/github-ninja-plugin/badges/<name>.svg`); no badge
+service is used (the user, 2026-11-28). On pushes to `main`, `check.yml`'s `badges` job (after
+`check`, even when it fails, never on pull requests, the only job with `contents: write`)
+renders `check`, `version`, `license` and `skills` (the count of `skills/*/SKILL.md`) with
+`bash scripts/badges.sh SPEC OUTDIR` (pinned npm `badge-maker`, offline) and force-pushes them
+as the branch's only commit.
+
+Actions are pinned to commit SHAs (version in a comment) with
 `permissions: contents: read`; pass event values to scripts through `env:`, never by `${{ }}`
 inside `run:`.
