@@ -140,6 +140,30 @@
       ]
     },
     {
+      "name": "pull-request-authoring",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "pull-request-code-review",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
+      "name": "pull-request-review-feedback",
+      "version": "1.0.0",
+      "files": [
+        "LICENSE.txt",
+        "SKILL.md"
+      ]
+    },
+    {
       "name": "rebase-current-branch",
       "version": "1.0.0",
       "files": [

@@ -42,9 +42,10 @@ Smaller or niche:
 
 ## To decide
 
-- [ ] Bundle skills from `github/github-mcp-server` that need the GitHub MCP tools
-  (`repository-health-review`, `security-alert-triage`, `release-preparation`)?
-  See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
+- [ ] Bundle more skills from `github/github-mcp-server` that need the GitHub MCP tools
+  (`repository-health-review`, `security-alert-triage`, `release-preparation`)? Its three
+  pull-request skills are bundled since 2026-11-28 (the user), next to our own `gh`-based
+  `pull-requests` skill. See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
 

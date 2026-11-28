@@ -16,6 +16,11 @@ github/awesome-copilot (MIT, Copyright GitHub, Inc.)
   skills/github-issues
   skills/conventional-branch
 
+github/github-mcp-server (MIT, Copyright (c) 2025 GitHub)
+  skills/pull-request-authoring
+  skills/pull-request-code-review
+  skills/pull-request-review-feedback
+
 cli/cli (MIT, Copyright (c) 2019 GitHub Inc.)
   skills/gh
 
