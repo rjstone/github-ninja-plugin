@@ -12,25 +12,30 @@ Big gaps (everyday agent work): none left. Pull requests are covered by the copi
 github-mcp-server skills; rulesets and releases tested fine without a skill (see "Decided
 against").
 
-Medium gaps (Actions and platform depth):
-- [ ] **Writing actions and reusable workflows**: `workflow_call`, composite, JavaScript and
-  Docker actions, matrix strategy, Marketplace publishing. Not covered by a skill:
-  awesome-copilot has only an instructions file (`github-actions-ci-cd-best-practices`) and an
-  agent (`github-actions-expert`) for *using* Actions; neither covers authoring actions, and
-  neither is in skill format.
+Medium gaps (Actions and platform depth): none open.
 
 Smaller or niche:
-- [ ] **Projects (v2)**: `gh project`, custom fields, automation, GraphQL.
-- [ ] **Codespaces and dev containers**: efficiency is covered by the copied
-  `github-codespaces-efficiency`; writing a `devcontainer.json` from scratch and Codespaces
-  secrets are not.
 - [ ] **GraphQL API**: pagination, rate-limit cost, when to prefer it over REST (check what
   `gh` already covers).
-- [ ] **Discussions, wikis, gists** (low value for agents).
-- [ ] **Organization and enterprise administration**: teams, roles, SSO, audit log (risky for
-  agents to act on).
-- [ ] **Copilot-side features**: coding agent, custom instructions, Copilot code review,
-  GitHub Models (overlaps issue #1).
+
+## Deferred (the user, 2026-11-28)
+
+- **Projects (v2)**: `gh project`, custom fields, automation, GraphQL.
+- **Codespaces and dev containers** beyond efficiency (covered by the copied
+  `github-codespaces-efficiency`): writing a `devcontainer.json` from scratch, Codespaces
+  secrets.
+- **Copilot-side features**: coding agent, custom instructions, Copilot code review, GitHub
+  Models (overlaps issue #1).
+
+## Out of scope (the user, 2026-11-28)
+
+- **Writing actions and reusable workflows** (`workflow_call`, composite, JavaScript and Docker
+  actions, Marketplace publishing): a large topic of its own. awesome-copilot has only an
+  instructions file (`github-actions-ci-cd-best-practices`) and an agent
+  (`github-actions-expert`) for *using* Actions.
+- **Discussions, wikis, gists**: simple features agents rarely use directly.
+- **Organization and enterprise administration** (teams, roles, SSO, audit log): risky for
+  agents to act on.
 
 ## Known small-model gaps (2026-11-28)
 
