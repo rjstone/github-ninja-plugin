@@ -148,6 +148,13 @@
       ]
     },
     {
+      "name": "repo-badges",
+      "version": "0.1.0",
+      "files": [
+        "SKILL.md"
+      ]
+    },
+    {
       "name": "repo-security-posture",
       "version": "1.0.0",
       "files": [
