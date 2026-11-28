@@ -2,7 +2,7 @@
 name: repo-badges
 description: 'Use when adding, fixing or restyling README badges: CI status, test counts, version, license, coverage or "built with" tech badges, shields.io static badge URLs and logos, badges generated in CI and hosted in the repo without a badge service, or a badge that shows a broken image, the wrong logo or an old value.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # README badges
