@@ -37,6 +37,13 @@ Smaller or niche: none open.
 
 ## Known small-model gaps (2026-11-28)
 
+Upstream PRs for two of these, opened 2026-11-28 (the user's fork branches
+`rjstone/minor-skill-gaps`): [github/awesome-copilot#6648](https://github.com/github/awesome-copilot/pull/6648)
+(merge queue org-only + never-reporting required checks, `diagnose-ci-gate`) and
+[superagent-ai/skills#27](https://github.com/superagent-ai/skills/pull/27) (dependency-review must
+be a required check, `repo-security-posture`; CLA pending). When merged, the daily upstream
+sync brings them here.
+
 Points Haiku or DeepSeek v4.1 Flash got wrong or left out in baselines whose topic otherwise
 passed. Fold them into a skill if one is written for the topic, or into a short gotchas
 reference if they keep showing up:
