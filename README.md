@@ -29,6 +29,7 @@ may follow.
 | `repo-security-posture` | Auditing a repo's security settings and hardening gaps (branch protection, CODEOWNERS, Actions, release integrity, collaborator access, security features), as ranked fixes tied to attack scenarios; its collector script only reads (GitHub API GETs) | [superagent-ai/skills](https://github.com/superagent-ai/skills) |
 | `github-pages` | Publishing with GitHub Pages: branch vs Actions source, the pinned deploy workflow, enabling Pages with `gh api`, custom domains, DNS and HTTPS, 404 and base-path troubleshooting | this repo |
 | `github-apps` | GitHub Apps: when to use one instead of a PAT or `GITHUB_TOKEN`, creating one, installation tokens in Actions and code (JWT), webhook signature checks, private key rotation | this repo |
+| `repo-badges` | README badges: GitHub status badges, shields.io static badges and logos (Simple Icons, svgl fallback), and badges rendered in CI with a pinned renderer onto an orphan `badges` branch, with no badge service | this repo |
 | `gh-attach` | Uploading screenshots and files to PRs, issues and comments, and downloading attachments, with the `gh attach` extension | [sudosubin/gh-attach](https://github.com/sudosubin/gh-attach) |
 
 Most skills are copied from their upstream repositories (all MIT; see

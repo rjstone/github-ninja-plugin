@@ -37,7 +37,7 @@ only skills; commands, agents or hooks may follow.
   repo, commit and folder in `NOTICE`. Only copy from repos whose licence allows it (MIT,
   Apache-2.0, ...). List any local edit to a copied skill in `NOTICE`. Before adding, read the
   whole skill: no hidden instructions, no `curl | sh`, no unexpected hosts.
-- **Skills written here** (`github-pages`, `github-apps`): only for a topic with no upstream
+- **Skills written here** (`github-pages`, `github-apps`, `repo-badges`): only for a topic with no upstream
   skill worth copying. They are MIT under the repo's `LICENSE`, so they have no `LICENSE.txt`,
   `metadata.upstream` or `NOTICE` entry, and the upstream sync skips them. Before merging a
   new one or a large change, test it the superpowers `writing-skills` way: give the same tasks
