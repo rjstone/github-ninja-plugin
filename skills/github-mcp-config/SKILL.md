@@ -2,7 +2,7 @@
 name: github-mcp-config
 description: 'Use only when a skill needs the GitHub MCP tools (create_pull_request, pull_request_read, ...) but no GitHub MCP server is configured in this harness, so you can advise or help the user add GitHub''s official server the best way for their harness and auth.'
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Adding GitHub's official MCP server
@@ -25,10 +25,25 @@ is deprecated and has different tool names; replace it.
 
 | | Remote, hosted by GitHub | Local (Docker image or binary) |
 |---|---|---|
-| OAuth, no token | only Copilot hosts (VS Code, Visual Studio, JetBrains, Xcode, Eclipse) | any harness, on github.com: browser login on first use, token kept in memory |
-| Personal access token | every other harness, Claude Code, Codex and Cursor included | any harness (`GITHUB_PERSONAL_ACCESS_TOKEN`, takes precedence over OAuth) |
+| OAuth, no token | Copilot hosts (VS Code, Visual Studio, JetBrains, Xcode, Eclipse), and claude.ai's own GitHub connector (below) | any harness, on github.com: browser login on first use, token kept in memory |
+| Personal access token | every other harness, Claude Code CLI, Codex and Cursor included | any harness (`GITHUB_PERSONAL_ACCESS_TOKEN`, takes precedence over OAuth) |
 
-So: user wants no token and isn't on a Copilot host → local server. Otherwise the remote one
+Why: the remote server has no dynamic client registration, so OAuth needs a client that ships
+a registered GitHub App. Claude Code's `claude mcp add` tries registration and fails with
+"Incompatible auth server: does not support dynamic client registration"
+([claude-code#3433](https://github.com/anthropics/claude-code/issues/3433)).
+
+claude.ai (web, desktop) connector: it signs in through Anthropic's "Claude Github MCP
+Connector" GitHub App. Its flow can stop after *authorizing* the app without *installing* it
+([claude-ai-mcp#530](https://github.com/anthropics/claude-ai-mcp/issues/530)): it shows
+Connected, but repo calls return 404 or writes 403. Fix: open
+https://github.com/settings/apps/authorizations, follow the app's link to its page, and install
+it on the repos (`https://github.com/apps/<app slug>/installations/new`); afterwards it is
+listed at https://github.com/settings/installations. The number in a
+`settings/installations/<number>` URL is the installation, not the app, so it doesn't build
+the install link.
+
+So: user wants no token and isn't on a Copilot host or claude.ai → local server. Otherwise the remote one
 is simplest (nothing to install). GitHub Enterprise Server and `ghe.com` need the local
 server and their own OAuth or GitHub App: see the repo's `docs/oauth-login.md`.
 
