@@ -53,7 +53,8 @@ Logo fallback when Simple Icons has none (or shields.io doesn't have it yet):
 
 1. Get an SVG from [svgl](https://svgl.app/docs/api): `https://api.svgl.app?search=<name>`
    returns `[{title, route, ...}]`; `route` is the SVG URL (or `{light, dark}`). Rate-limited:
-   fetch once, keep the file.
+   fetch once, keep the file. Or take the SVG straight from the repo,
+   [pheralb/svgl](https://github.com/pheralb/svgl).
 2. Base64 it and pass it as a data URI: shields.io `?logo=data:image/svg%2bxml;base64,<b64>`
    (`+` must be `%2b`), `badgepy --logo <file or data URI> --embed-logo`, or `badge-maker`'s
    `logoBase64` in the API.
@@ -62,8 +63,9 @@ Check a logo offline (shields.io unreachable): render the same badge with `badge
 `logoBase64` set to the icon from the `simple-icons` npm package, and open the SVG. If the
 slug isn't in that package, shields.io doesn't have it either.
 
-Brand logos (Simple Icons is CC0 as a collection, svgl grants no license) stay their owners'
-trademarks: describe use ("works with Claude"), don't imply endorsement.
+Brand logos stay their owners' trademarks, whatever the collection's license (Simple Icons is
+CC0, the svgl repo is MIT): whether a use is allowed depends on the trademark owner's terms.
+Describe use ("works with Claude"), don't imply endorsement.
 
 [New Shields](https://newshields.vercel.app/docs) (`/api/badge.svg?label=&title=&icon=<svgl
 slug>&theme=`) is a separate personal project, not a shields fork: icons are svgl slugs, unknown
