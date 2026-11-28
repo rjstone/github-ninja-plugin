@@ -11,7 +11,7 @@ A badge is a small SVG image. Pick where it comes from first:
 
 | Need | Use |
 |---|---|
-| Pass/fail of one workflow, nothing else | GitHub's own badge (below) |
+| Pass/fail of one workflow, nothing else | GitHub's own badge (below); render it in CI only to match a self-hosted row's style |
 | Fixed facts: language, framework, "works with" | a static badge: a shields.io URL, or the same badge rendered once and committed |
 | Changing values (test count, version, coverage) with no badge service | render in CI, publish to an orphan `badges` branch (below) |
 
@@ -83,10 +83,16 @@ after the tests renders the SVGs and force-pushes them as the only commit of an 
 `badges`, so the branch never grows and `main` gets no commits:
 
 ```yaml
+permissions:
+  contents: read                      # workflow default; only the badges job widens it
+jobs:
   test:
-    # ...existing steps, then:
-    outputs: { passed: "${{ steps.count.outputs.passed }}", failed: "${{ steps.count.outputs.failed }}" }
+    runs-on: ubuntu-latest
+    outputs:                          # job level; names match the count step's id
+      passed: ${{ steps.count.outputs.passed }}
+      failed: ${{ steps.count.outputs.failed }}
     steps:
+      # ...checkout and setup as before, then:
       - run: python -m pytest -q --junitxml="$RUNNER_TEMP/junit.xml"
       - name: Count tests
         id: count
@@ -140,8 +146,21 @@ after the tests renders the SVGs and force-pushes them as the only commit of an 
 ```
 
 - Counts come from the test runner's own summary, in a step with `if: always()`: pytest
-  `--junitxml` (above), `node --test`'s `# pass N` / `# fail N` lines, unittest's `Ran N tests`
-  and `FAILED (failures=…, errors=…)`.
+  `--junitxml` (above), unittest's `Ran N tests` and `FAILED (failures=…, errors=…)`, or
+  `node --test`'s `# pass N` / `# fail N` lines. For Node, save the log in the test step
+  (`shell: bash` makes the pipe keep `npm test`'s exit code) and read it in the count step:
+
+  ```yaml
+      - run: npm test 2>&1 | tee "$RUNNER_TEMP/test.log"
+        shell: bash
+      - id: count
+        if: always()
+        run: |
+          echo "passed=$(sed -n 's/^# pass //p' "$RUNNER_TEMP/test.log" 2>/dev/null | tail -1)" >> "$GITHUB_OUTPUT"
+          echo "failed=$(sed -n 's/^# fail //p' "$RUNNER_TEMP/test.log" 2>/dev/null | tail -1)" >> "$GITHUB_OUTPUT"
+  ```
+
+  (An empty value counts as 0: the render step uses `${PASSED:-0}`.)
 - Version and license come from the manifest, never typed by hand: `pyproject.toml` as above
   (`license` may be a string or `{text = ...}`), `package.json` with
   `node -p "require('./package.json').version"`.
