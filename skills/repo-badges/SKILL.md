@@ -35,11 +35,13 @@ writing it down.
 
 - Escaping in the path: `-` → `--`, `_` → `__`, space → `_` or `%20`, `%` → `%25`, `/` → `%2F`,
   `+` → `%2B`. Leave out `<label>-` for a one-part badge: `/badge/<message>-<color>`.
-- `logo` is a [Simple Icons](https://simpleicons.org) slug (lowercase, as in its `slugs.md`).
-  Take the brand hex from Simple Icons too (`data/simple-icons.json`). shields.io can lag new
+- `logo` is a [Simple Icons](https://simpleicons.org) slug: look it up in
+  [`slugs.md`](https://github.com/simple-icons/simple-icons/blob/develop/slugs.md) (title →
+  slug; usually lowercase with spaces and punctuation removed). Take the brand hex from
+  `data/simple-icons.json` (by `title`). shields.io can lag new
   Simple Icons releases: if a logo does not appear, use the fallback below.
 - `logoWidth` was removed (shields.io, 2025-04). It is silently ignored: use `logoSize=auto` for
-  wide logos. `logoColor` and `logoSize` work only on Simple Icons logos.
+  wide logos, and tell the user you replaced it (same for any parameter you drop). `logoColor` and `logoSize` work only on Simple Icons logos.
 - `link=` works only inside `<object>`, not in Markdown or `<img>`: wrap the image in a Markdown
   link instead.
 - One style per row. Mixing `for-the-badge` with `flat` makes a ragged row.
@@ -55,6 +57,10 @@ Logo fallback when Simple Icons has none (or shields.io doesn't have it yet):
 2. Base64 it and pass it as a data URI: shields.io `?logo=data:image/svg%2bxml;base64,<b64>`
    (`+` must be `%2b`), `badgepy --logo <file or data URI> --embed-logo`, or `badge-maker`'s
    `logoBase64` in the API.
+
+Check a logo offline (shields.io unreachable): render the same badge with `badge-maker`'s API,
+`logoBase64` set to the icon from the `simple-icons` npm package, and open the SVG. If the
+slug isn't in that package, shields.io doesn't have it either.
 
 Brand logos (Simple Icons is CC0 as a collection, svgl grants no license) stay their owners'
 trademarks: describe use ("works with Claude"), don't imply endorsement.
@@ -77,25 +83,51 @@ after the tests renders the SVGs and force-pushes them as the only commit of an 
 `badges`, so the branch never grows and `main` gets no commits:
 
 ```yaml
+  test:
+    # ...existing steps, then:
+    outputs: { passed: "${{ steps.count.outputs.passed }}", failed: "${{ steps.count.outputs.failed }}" }
+    steps:
+      - run: python -m pytest -q --junitxml="$RUNNER_TEMP/junit.xml"
+      - name: Count tests
+        id: count
+        if: always()                  # also after failures; no report (collection error) -> 0
+        run: |
+          python - "$RUNNER_TEMP/junit.xml" >> "$GITHUB_OUTPUT" <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          try: r = ET.parse(sys.argv[1]).getroot()
+          except (OSError, ET.ParseError): print("passed=0\nfailed=0"); sys.exit()
+          s = [r] if r.tag == "testsuite" else r.findall("testsuite")
+          n = lambda k: sum(int(x.get(k, 0)) for x in s)
+          print(f"passed={n('tests') - n('failures') - n('errors') - n('skipped')}\nfailed={n('failures') + n('errors')}")
+          PY
+
   badges:
-    needs: test                       # the job that runs the tests and sets outputs
+    needs: test
     if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'OWNER/REPO'
     runs-on: ubuntu-latest
     permissions:
       contents: write                 # only this job; the workflow default stays read
     concurrency: { group: badges, cancel-in-progress: true }
     steps:
-      - uses: actions/setup-node@<sha> # vX.Y.Z, SHA looked up, see below
+      - uses: actions/checkout@<sha>  # vX.Y.Z; SHAs looked up, see below
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@<sha> # vX.Y.Z
         with: { node-version: 22 }
       - name: Render
         env:                          # event values through env, never ${{ }} inside run
           RESULT: ${{ needs.test.result }}
           PASSED: ${{ needs.test.outputs.passed }}
+          FAILED: ${{ needs.test.outputs.failed }}
         run: |
-          mkdir -p "$RUNNER_TEMP/b" && cd "$RUNNER_TEMP/b"
+          read -r VERSION LICENSE < <(python3 -c 'import tomllib; p = tomllib.load(open("pyproject.toml", "rb"))["project"]; l = p.get("license", "unknown"); print(p["version"], l if isinstance(l, str) else l.get("text", "unknown"))')
           case "$RESULT" in success) c=brightgreen; m=passing ;; failure) c=red; m=failing ;; *) c=lightgrey; m=$RESULT ;; esac
-          npx -y -p badge-maker@6.0.0 badge check "$m" ":$c" > check.svg
-          npx -y -p badge-maker@6.0.0 badge tests "${PASSED:-0} passed" :brightgreen > tests.svg
+          if [ "${FAILED:-0}" != 0 ]; then t="$FAILED failed"; tc=red; else t="${PASSED:-0} passed"; tc=brightgreen; fi
+          mkdir -p "$RUNNER_TEMP/b" && cd "$RUNNER_TEMP/b"
+          bm() { npx -y -p badge-maker@6.0.0 badge "$@"; }
+          bm check "$m" ":$c" > check.svg
+          bm tests "$t" ":$tc" > tests.svg
+          bm version "v$VERSION" :blue > version.svg
+          bm license "$LICENSE" :blue > license.svg
       - name: Publish
         env: { GH_TOKEN: "${{ github.token }}", REPO: "${{ github.repository }}" }
         run: |
@@ -107,14 +139,16 @@ after the tests renders the SVGs and force-pushes them as the only commit of an 
           git push -q --force "https://x-access-token:$GH_TOKEN@github.com/$REPO.git" badges
 ```
 
-- Counts come from the test runner's own summary, written as job outputs in a step with
-  `if: always()`: pytest `--junitxml` (tests − failures − errors − skipped), `node --test`'s
-  `# pass N` / `# fail N`, unittest's `Ran N tests` and `FAILED (failures=…, errors=…)`.
-- Version and license come from the manifest (`pyproject.toml`, `package.json`, ...), never
-  typed by hand.
+- Counts come from the test runner's own summary, in a step with `if: always()`: pytest
+  `--junitxml` (above), `node --test`'s `# pass N` / `# fail N` lines, unittest's `Ran N tests`
+  and `FAILED (failures=…, errors=…)`.
+- Version and license come from the manifest, never typed by hand: `pyproject.toml` as above
+  (`license` may be a string or `{text = ...}`), `package.json` with
+  `node -p "require('./package.json').version"`.
 - Look up every action SHA, never write one from memory:
-  `gh api repos/actions/setup-node/git/ref/tags/<vX.Y.Z> --jq .object.sha` (an annotated tag
-  returns a tag object: follow it with `gh api repos/<o>/<r>/git/tags/<sha> --jq .object.sha`).
+  `git ls-remote --tags https://github.com/actions/setup-node 'v6*'`: a line ending in `^{}` is
+  the commit of an annotated tag; without one, the SHA shown is the commit. (`gh api
+  repos/<o>/<r>/git/ref/tags/<tag>` works too, but returns the tag object for annotated tags.)
 - The workflow never runs this job for `pull_request` or `pull_request_target`: a fork's PR
   would otherwise publish its numbers, or run fork code with a write token.
 
