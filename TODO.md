@@ -32,35 +32,49 @@ Smaller or niche:
 - [ ] **Copilot-side features**: coding agent, custom instructions, Copilot code review,
   GitHub Models (overlaps issue #1).
 
+## Known small-model gaps (2026-11-28)
+
+Points Haiku or DeepSeek v4.1 Flash got wrong or left out in baselines whose topic otherwise
+passed. Fold them into a skill if one is written for the topic, or into a short gotchas
+reference if they keep showing up:
+- Merge queues need an org-owned repo.
+- Immutable releases: notes and title stay editable; assets and the tag don't.
+- PyPI trusted publishing checks the workflow that runs the upload (rename it on PyPI when
+  publishing moves into another workflow).
+- No REST endpoint changes a package's visibility (UI only), and making it public can't be
+  undone.
+- The dependency-review check only blocks merges when it is a required status check.
+- A GitHub App in a ruleset's bypass list must push with its installation token, not
+  `GITHUB_TOKEN`.
+
 ## To decide
 
 - [ ] Bundle more skills from `github/github-mcp-server` that need the GitHub MCP tools
   (`repository-health-review`, `security-alert-triage`, `release-preparation`)? Its three
-  pull-request skills are bundled since 2026-11-28 (the user), next to our own `gh`-based
-  `pull-requests` skill. See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
+  pull-request skills are bundled since 2026-11-28 (the user); no `gh`-based PR skill of
+  our own (see "Decided against"). See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
 
 - Deployments, environments and OIDC to clouds (2026-11-28, the user): too situation-specific.
-- Our own GHCR/GitHub Packages, artifact attestations/SBOM and security advisories skills
-  (2026-11-28, the user): no upstream skill worth copying (skills.sh: only hits under ~500
-  installs or off-topic), and baseline agents without a skill got them right: the
+- Our own GHCR/GitHub Packages and artifact attestations/SBOM skills (2026-11-28, the user):
+  no upstream skill worth copying (skills.sh: only hits under ~500 installs or off-topic), and
+  baseline agents without a skill (Opus, Haiku and DeepSeek v4.1 Flash) got them right: the
   `org.opencontainers.image.source` label, `packages: write`, "Manage Actions access" for a
   403 from another repo, the multi-arch untagged-cleanup pitfall; `attest-build-provenance` /
   `attest-sbom`, verification pinned to signer workflow, tag ref and digest, Enterprise Cloud
-  for private repos, dependency-review, the dependency-graph SBOM export; private
-  vulnerability reporting, the advisory lifecycle API, CVE requests, temporary private forks,
-  Dependabot alerting only after review. Their one miss, unpinned actions, is covered by
+  for private repos, dependency-review, the dependency-graph SBOM export. Their one shared miss, unpinned actions, is covered by
   `github-actions-hardening` and `pins.py`.
 
 - Our own `pull-requests` (`gh`) and `rulesets` skills (2026-11-28, the user): baseline agents
-  without a skill already got PR mechanics (review API with suggestions, `mergeStateStatus`,
+  without a skill (Opus, Haiku and DeepSeek v4.1 Flash) already got PR mechanics (review API with suggestions, `mergeStateStatus`,
   auto-merge, CODEOWNERS order, merge methods), rulesets (full JSON, bypass actors, tag rules,
   stuck "Expected" checks, `rules/branches/<b>`) and merge queues (`merge_group`) right. The
   process side is covered by the copied github-mcp-server pull-request skills. Revisit only if
   agents are seen failing at these.
-- Our own releases-and-tags skill (2026-11-28, the user): a baseline agent without a skill
-  already got immutable releases (draft, upload, then publish; notes editable, assets and tag
+- Our own releases-and-tags skill (2026-11-28, the user): baseline agents without a skill
+  (Opus, Haiku and DeepSeek v4.1 Flash; the small models slipped on details listed under
+  "Known small-model gaps") already got immutable releases (draft, upload, then publish; notes editable, assets and tag
   not), `gh release create --verify-tag`, `GITHUB_TOKEN`-created releases not starting
   `release: published` workflows, git-cliff `--latest --strip all` notes and a tag-on-main
   check right. Its one miss, unpinned actions, is covered by `github-actions-hardening`.

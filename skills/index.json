@@ -215,6 +215,13 @@
         "references/custom-patterns.md",
         "references/push-protection.md"
       ]
+    },
+    {
+      "name": "security-advisories",
+      "version": "0.1.0",
+      "files": [
+        "SKILL.md"
+      ]
     }
   ]
 }

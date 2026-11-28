@@ -35,6 +35,7 @@ may follow.
 | `pull-request-review-feedback` | Working through review threads on your PR: decide, reply, resolve only what is settled (GitHub MCP tools) | [github/github-mcp-server](https://github.com/github/github-mcp-server) |
 | `repo-badges` | README badges: GitHub status badges, shields.io static badges and logos (Simple Icons, svgl fallback), and badges rendered in CI with a pinned renderer onto an orphan `badges` branch, with no badge service | this repo |
 | `github-mcp-config` | Adding GitHub's official MCP server when a skill needs its tools and none is configured: check for an existing one, remote (PAT, or OAuth on Copilot hosts) vs local (OAuth without a token), per-harness token syntax, toolsets and read-only | this repo |
+| `security-advisories` | Handling vulnerabilities on GitHub: private vulnerability reporting, SECURITY.md, editing the reported draft advisory, temporary private fork, CVE request, credits, publishing, when Dependabot alerts, reporting upstream | this repo |
 | `gh-attach` | Uploading screenshots and files to PRs, issues and comments, and downloading attachments, with the `gh attach` extension | [sudosubin/gh-attach](https://github.com/sudosubin/gh-attach) |
 
 Most skills are copied from their upstream repositories (all MIT; see
