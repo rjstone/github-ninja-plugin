@@ -8,14 +8,9 @@ GitHub features no skill covers yet, roughly by how often an agent meets them. F
 search upstream (github/awesome-copilot, skills.sh) for a skill worth copying; write our own
 only if none fits (see AGENTS.md, "Skills written here").
 
-Big gaps (everyday agent work):
-- [ ] **Pull requests and code review**: reviews and inline comments, suggested changes, draft
-  and ready, auto-merge, merge methods, merge queue, `CODEOWNERS`.
-- [ ] **Rulesets and branch protection**: required checks and reviews, bypass lists, tag
-  protection, why a merge is blocked. (`netresearch` github-project was rejected for its
-  licence, not its topic.)
-- [ ] **Releases and tags**: `gh release`, generated notes, assets, immutable releases,
-  release-triggered workflows. Build on git-cliff (awesome-copilot `github-release` clashes).
+Big gaps (everyday agent work): none left. Pull requests are covered by the copied
+github-mcp-server skills; rulesets and releases tested fine without a skill (see "Decided
+against").
 
 Medium gaps (Actions and platform depth):
 - [ ] **Writing actions and reusable workflows**: `workflow_call`, composite, JavaScript and
@@ -44,11 +39,24 @@ Smaller or niche:
 
 ## To decide
 
-- [ ] Bundle skills from `github/github-mcp-server` that need the GitHub MCP tools
-  (`repository-health-review`, `security-alert-triage`, `release-preparation`)?
-  See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
+- [ ] Bundle more skills from `github/github-mcp-server` that need the GitHub MCP tools
+  (`repository-health-review`, `security-alert-triage`, `release-preparation`)? Its three
+  pull-request skills are bundled since 2026-11-28 (the user), next to our own `gh`-based
+  `pull-requests` skill. See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
+
+- Our own `pull-requests` (`gh`) and `rulesets` skills (2026-11-28, the user): baseline agents
+  without a skill already got PR mechanics (review API with suggestions, `mergeStateStatus`,
+  auto-merge, CODEOWNERS order, merge methods), rulesets (full JSON, bypass actors, tag rules,
+  stuck "Expected" checks, `rules/branches/<b>`) and merge queues (`merge_group`) right. The
+  process side is covered by the copied github-mcp-server pull-request skills. Revisit only if
+  agents are seen failing at these.
+- Our own releases-and-tags skill (2026-11-28, the user): a baseline agent without a skill
+  already got immutable releases (draft, upload, then publish; notes editable, assets and tag
+  not), `gh release create --verify-tag`, `GITHUB_TOKEN`-created releases not starting
+  `release: published` workflows, git-cliff `--latest --strip all` notes and a tag-on-main
+  check right. Its one miss, unpinned actions, is covered by `github-actions-hardening`.
 
 - `netresearch/github-project-skill@github-project` (branch protection, rulesets, merge
   blockers): partly CC-BY-SA-4.0, whose share-alike terms would complicate the bundle's
