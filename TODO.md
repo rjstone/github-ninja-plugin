@@ -14,9 +14,7 @@ against").
 
 Medium gaps (Actions and platform depth): none open.
 
-Smaller or niche:
-- [ ] **GraphQL API**: pagination, rate-limit cost, when to prefer it over REST (check what
-  `gh` already covers).
+Smaller or niche: none open.
 
 ## Deferred (the user, 2026-11-28)
 
@@ -50,7 +48,10 @@ reference if they keep showing up:
   undone.
 - The dependency-review check only blocks merges when it is a required status check.
 - A GitHub App in a ruleset's bypass list must push with its installation token, not
-  `GITHUB_TOKEN`.
+  `GITHUB_TOKEN` (already covered by `github-apps`).
+- `gh api`: `--slurp` can't be combined with `--jq`; there is no `-R` flag (use the path or
+  `{owner}/{repo}` placeholders); `gh api graphql` exits non-zero when the response has
+  `errors`. These belong in the copied `gh` skill (cli/cli upstream).
 
 ## To decide
 
@@ -60,6 +61,12 @@ reference if they keep showing up:
   our own (see "Decided against"). See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
+
+- Our own GraphQL skill (2026-11-28, the user): Haiku (9/9) and DeepSeek v4.1 Flash (8/9)
+  baselines already used `reviewThreads` / `resolveReviewThread` with the thread node id,
+  `enablePullRequestAutoMerge`, `enqueuePullRequest`, `--paginate` with `$endCursor`,
+  `rateLimit { cost }`, node-id lookups and REST-vs-GraphQL judgement. Their misses were
+  `gh api` flag details (listed under "Known small-model gaps").
 
 - Deployments, environments and OIDC to clouds (2026-11-28, the user): too situation-specific.
 - Our own GHCR/GitHub Packages and artifact attestations/SBOM skills (2026-11-28, the user):
