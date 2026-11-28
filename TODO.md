@@ -14,15 +14,10 @@ against").
 
 Medium gaps (Actions and platform depth):
 - [ ] **Writing actions and reusable workflows**: `workflow_call`, composite, JavaScript and
-  Docker actions, matrix strategy, Marketplace publishing.
-- [ ] **Deployments, environments and OIDC to clouds**: environment secrets and protection
-  rules, required reviewers, keyless OIDC to AWS, Azure and GCP.
-- [ ] **Packages and the container registry (GHCR)**: publishing images and npm packages with
-  `GITHUB_TOKEN`, visibility, linking to a repo.
-- [ ] **Artifact attestations and supply-chain metadata**: `actions/attest-build-provenance`,
-  `gh attestation verify`, SBOM export, the dependency-review action.
-- [ ] **Security advisories**: repository advisories, private vulnerability reporting, CVE
-  requests, `SECURITY.md`.
+  Docker actions, matrix strategy, Marketplace publishing. Not covered by a skill:
+  awesome-copilot has only an instructions file (`github-actions-ci-cd-best-practices`) and an
+  agent (`github-actions-expert`) for *using* Actions; neither covers authoring actions, and
+  neither is in skill format.
 
 Smaller or niche:
 - [ ] **Projects (v2)**: `gh project`, custom fields, automation, GraphQL.
@@ -45,6 +40,18 @@ Smaller or niche:
   `pull-requests` skill. See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
+
+- Deployments, environments and OIDC to clouds (2026-11-28, the user): too situation-specific.
+- Our own GHCR/GitHub Packages, artifact attestations/SBOM and security advisories skills
+  (2026-11-28, the user): no upstream skill worth copying (skills.sh: only hits under ~500
+  installs or off-topic), and baseline agents without a skill got them right: the
+  `org.opencontainers.image.source` label, `packages: write`, "Manage Actions access" for a
+  403 from another repo, the multi-arch untagged-cleanup pitfall; `attest-build-provenance` /
+  `attest-sbom`, verification pinned to signer workflow, tag ref and digest, Enterprise Cloud
+  for private repos, dependency-review, the dependency-graph SBOM export; private
+  vulnerability reporting, the advisory lifecycle API, CVE requests, temporary private forks,
+  Dependabot alerting only after review. Their one miss, unpinned actions, is covered by
+  `github-actions-hardening` and `pins.py`.
 
 - Our own `pull-requests` (`gh`) and `rulesets` skills (2026-11-28, the user): baseline agents
   without a skill already got PR mechanics (review API with suggestions, `mergeStateStatus`,
