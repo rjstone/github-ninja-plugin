@@ -9,11 +9,6 @@ search upstream (github/awesome-copilot, skills.sh) for a skill worth copying; w
 only if none fits (see AGENTS.md, "Skills written here").
 
 Big gaps (everyday agent work):
-- [ ] **Pull requests and code review**: reviews and inline comments, suggested changes, draft
-  and ready, auto-merge, merge methods, merge queue, `CODEOWNERS`.
-- [ ] **Rulesets and branch protection**: required checks and reviews, bypass lists, tag
-  protection, why a merge is blocked. (`netresearch` github-project was rejected for its
-  licence, not its topic.)
 - [ ] **Releases and tags**: `gh release`, generated notes, assets, immutable releases,
   release-triggered workflows. Build on git-cliff (awesome-copilot `github-release` clashes).
 
@@ -48,6 +43,13 @@ Smaller or niche:
   `pull-requests` skill. See [issue #1](https://github.com/rjstone/github-ninja-plugin/issues/1).
 
 ## Decided against
+
+- Our own `pull-requests` (`gh`) and `rulesets` skills (2026-11-28, the user): baseline agents
+  without a skill already got PR mechanics (review API with suggestions, `mergeStateStatus`,
+  auto-merge, CODEOWNERS order, merge methods), rulesets (full JSON, bypass actors, tag rules,
+  stuck "Expected" checks, `rules/branches/<b>`) and merge queues (`merge_group`) right. The
+  process side is covered by the copied github-mcp-server pull-request skills. Revisit only if
+  agents are seen failing at these.
 
 - `netresearch/github-project-skill@github-project` (branch protection, rulesets, merge
   blockers): partly CC-BY-SA-4.0, whose share-alike terms would complicate the bundle's
