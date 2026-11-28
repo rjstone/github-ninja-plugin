@@ -8,7 +8,9 @@ GitHub features no skill covers yet, roughly by how often an agent meets them. F
 search upstream (github/awesome-copilot, skills.sh) for a skill worth copying; write our own
 only if none fits (see AGENTS.md, "Skills written here").
 
-Big gaps (everyday agent work):
+Big gaps (everyday agent work): none left. Pull requests are covered by the copied
+github-mcp-server skills; rulesets and releases tested fine without a skill (see "Decided
+against").
 
 Medium gaps (Actions and platform depth):
 - [ ] **Writing actions and reusable workflows**: `workflow_call`, composite, JavaScript and
