@@ -2,7 +2,7 @@
 name: github-mcp-config
 description: 'Use only when a skill needs the GitHub MCP tools (create_pull_request, pull_request_read, ...) but no GitHub MCP server is configured in this harness, so you can advise or help the user add GitHub''s official server the best way for their harness and auth.'
 metadata:
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Adding GitHub's official MCP server
@@ -36,9 +36,9 @@ a registered GitHub App. Claude Code's `claude mcp add` tries registration and f
 claude.ai (web, desktop) connector: it signs in through Anthropic's "Claude Github MCP
 Connector" GitHub App. Its flow can stop after *authorizing* the app without *installing* it
 ([claude-ai-mcp#530](https://github.com/anthropics/claude-ai-mcp/issues/530)): it shows
-Connected, but repo calls return 404 or writes 403. Fix: open
-https://github.com/settings/apps/authorizations, follow the app's link to its page, and install
-it on the repos (`https://github.com/apps/<app slug>/installations/new`); afterwards it is
+Connected, but repo calls return 404 or writes 403. Fix: open the app's authorization page,
+https://github.com/settings/connections/applications/Iv23liqtzNI7O8HSqwiJ (client ID of that
+app), follow the link to the app's page, and install it on the repos (`https://github.com/apps/<app slug>/installations/new`); afterwards it is
 listed at https://github.com/settings/installations. The number in a
 `settings/installations/<number>` URL is the installation, not the app, so it doesn't build
 the install link.
