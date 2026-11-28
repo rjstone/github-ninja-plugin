@@ -2,7 +2,7 @@
 name: github-mcp-config
 description: 'Use only when a skill needs the GitHub MCP tools (create_pull_request, pull_request_read, ...) but no GitHub MCP server is configured in this harness, so you can advise or help the user add GitHub''s official server the best way for their harness and auth.'
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Adding GitHub's official MCP server
@@ -15,7 +15,8 @@ use them for anything not covered here.
 ## First: is one already there?
 
 Check the harness's MCP list before adding anything (`claude mcp list`, `codex mcp list`,
-Cursor's MCP settings, ...). If any GitHub server exists, even under another name, fix or
+Cursor's MCP settings, ...), and account-level connectors too (claude.ai connectors, a
+Copilot host's built-in GitHub server). If any GitHub server exists, even under another name, fix or
 enable that one instead of adding a second: two near-identical tool sets confuse the model,
 and some harnesses don't resolve duplicates. The old npm `@modelcontextprotocol/server-github`
 is deprecated and has different tool names; replace it.
@@ -55,12 +56,18 @@ Maximal form; drop the lines you don't need:
   unknown name stops the server. `X-MCP-Readonly`: read tools only; skills that open or merge
   PRs then can't work. A single toolset also works as a URL path,
   `/mcp/x/<toolset>[/readonly]`.
+- Read-only: say up front that skills which open, update or merge PRs won't work with it.
 - PAT: a fine-grained token limited to the repos and permissions the user is comfortable with
   (Contents, Issues, Pull requests). The user creates it; never ask them to paste it to you.
 
 ## Local, OAuth without a token (github.com)
 
-Docker (the callback port must be published to loopback):
+No client ID or app registration needed on github.com: the official image and binary include
+them. The token lives in memory, so the user signs in again after each server restart. A set
+`GITHUB_PERSONAL_ACCESS_TOKEN` wins over the login.
+
+Docker (the callback port must be published to loopback; every env var needs its own `-e` to
+reach the container; use a different port per harness running at the same time):
 
 ```json
 { "mcpServers": { "github": {
@@ -72,14 +79,21 @@ Docker (the callback port must be published to loopback):
 } } }
 ```
 
-- Pin a release tag from the repo's releases (check it with `docker pull`), not `latest`.
+- Pin a release tag from the repo's releases (for example `v2.3.0`; check it with
+  `docker pull`), not `latest`.
+- Codex (`~/.codex/config.toml`) takes the same values as TOML: `[mcp_servers.github]` with
+  `command`, `args` and `env = { ... }`.
 - Native binary instead of Docker: `"command": "github-mcp-server", "args": ["stdio"]`, no
   fixed port needed. Headless machines fall back to a device code. See `docs/oauth-login.md`.
-- Same switches as env vars: `GITHUB_TOOLSETS`, `GITHUB_TOOLS`, `GITHUB_READ_ONLY=1`.
+- Same switches as env vars: `GITHUB_TOOLSETS`, `GITHUB_TOOLS`, `GITHUB_READ_ONLY=1` (add a
+  matching `-e` for each in Docker).
 
 ## Then
 
 - Name the server `github`: skills and docs refer to its tools that way.
+- Where it goes: Claude Code `.mcp.json` (project) or `claude mcp add-json github '<json>'`
+  (user scope); Codex `~/.codex/config.toml`; Cursor `~/.cursor/mcp.json` or `.cursor/mcp.json`;
+  others: their guide in the repo's `docs/installation-guides`.
 - Tell the user which file you would change and show the snippet before writing it; adding an
   MCP server is their decision.
 - Verify: the harness lists the server as connected, and a read tool such as `get_me` works.
