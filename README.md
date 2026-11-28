@@ -19,6 +19,7 @@ may follow.
 | `github-actions-runtime-upgrade-conventions` | Moving actions to supported runtimes (e.g. off Node 20) without changing behaviour | github/awesome-copilot |
 | `dependabot` | `dependabot.yml`, grouped and security updates, monorepos, auto-triage | github/awesome-copilot |
 | `secret-scanning` | Secret scanning, push protection, custom patterns, alert remediation | github/awesome-copilot |
+| `github-codespaces-efficiency` | Faster, cheaper Codespaces: slim dev containers, machine size, prebuild scope, idle timeout, measured before and after | github/awesome-copilot |
 | `codeql` | CodeQL code scanning through Actions and the CodeQL CLI | github/awesome-copilot |
 | `github-issues` | Creating and managing issues: labels, milestones, issue types and fields, sub-issues and dependencies (GitHub MCP tools or `gh api`) | github/awesome-copilot |
 | `diagnose-ci-gate` | "Is this red check mine?": read the real log and first error, classify bug / flaky / environment / pipeline, recommend one action | github/awesome-copilot |

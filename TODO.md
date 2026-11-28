@@ -31,7 +31,9 @@ Medium gaps (Actions and platform depth):
 
 Smaller or niche:
 - [ ] **Projects (v2)**: `gh project`, custom fields, automation, GraphQL.
-- [ ] **Codespaces and dev containers**: `devcontainer.json`, prebuilds, secrets.
+- [ ] **Codespaces and dev containers**: efficiency is covered by the copied
+  `github-codespaces-efficiency`; writing a `devcontainer.json` from scratch and Codespaces
+  secrets are not.
 - [ ] **GraphQL API**: pagination, rate-limit cost, when to prefer it over REST (check what
   `gh` already covers).
 - [ ] **Discussions, wikis, gists** (low value for agents).
@@ -55,6 +57,12 @@ Smaller or niche:
   `github-release` (Keep a Changelog flow clashes with git-cliff and tag releases),
   `repo-standardizer` (its CI templates use unpinned actions with no `permissions:`),
   `lean-comments` (not GitHub-specific).
+- From a skills.sh search (`npx skills find`, 2026-11-28) for the medium gaps:
+  `wshobson/agents@github-actions-templates` (MIT, 18.7K installs: 19 unpinned actions, almost
+  no `permissions:`), `trailofbits/skills@devcontainer-setup` (CC-BY-SA-4.0, the same
+  share-alike problem as `netresearch`), `github/awesome-copilot@gh-cli` (overlaps the bundled
+  `gh` skill). Nothing reputable found for OIDC, environments, GHCR, attestations,
+  advisories, Projects v2 or GraphQL. `github-codespaces-efficiency` was copied.
 
 ## Packaging
 
