@@ -17,6 +17,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
+      - name: .claude-plugin/icon.png matches assets/icon.png
+        # assets/icon.png is the one to edit; Claude Code finds the copy in .claude-plugin/ (the
+        # manifest has no "icon" key: the claude.ai marketplace sync warns about it as unknown).
+        run: cmp assets/icon.png .claude-plugin/icon.png || { echo "::error file=.claude-plugin/icon.png::differs from assets/icon.png (copy it again)"; exit 1; }
       - name: Validate the marketplace and plugin
         run: npx -y @anthropic-ai/claude-code@2.1.332 plugin validate .
       - name: Validate the plugin against the plugin directory's checks

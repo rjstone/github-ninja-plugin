@@ -24,8 +24,9 @@ only skills; commands, agents or hooks may follow.
     stops reading the Claude one) goes in a top-level folder named after that harness
     (`opencode/`, `codex/`).
 - The plugin icon is `assets/icon.png` (square PNG, 512-2048 px, under 2 MB; no SVG or WebP),
-  named by `"icon"` in `.claude-plugin/plugin.json`. The repo root is the plugin, so one copy
-  is enough.
+  the one to edit. An identical copy sits at `.claude-plugin/icon.png`, where Claude Code finds
+  it; CI fails if the copy differs. `.claude-plugin/plugin.json` has no `"icon"` key: the
+  claude.ai marketplace sync (Agent SDK) warns about it as an unknown key (2026-11-28).
 - Keep `README.md`'s skill table and install section in sync with `skills/` and the formats.
 
 ## Skills
