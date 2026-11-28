@@ -43,8 +43,10 @@ only skills; commands, agents or hooks may follow.
   `metadata.upstream` or `NOTICE` entry, and the upstream sync skips them. Before merging a
   new one or a large change, test it the superpowers `writing-skills` way: give the same tasks
   to a subagent with and without the skill, keep only what fixes a failure seen without it, and
-  re-test after the fixes. Look up the newest release of every action a skill pins, and pin it
-  by commit SHA with the date checked (no tool updates these pins).
+  re-test after the fixes. Pin every action a skill shows as
+  `uses: owner/repo@<commit SHA> # vX.Y.Z`, looked up, never from memory: `pins.py --check` (CI)
+  fails unless the SHA is that tag's commit, and `--update` (the `deps-sync` PR) moves these pins
+  to each action's newest release and bumps the skill's patch version.
 - **Updating from upstream** is automated: `.github/workflows/upstream-sync.yml` (daily, or by
   hand) runs `scripts/sync_upstream.py --apply`, which compares each skill's upstream folder at
   its pinned commit with upstream's default branch and, for each changed one, copies the new
@@ -60,7 +62,9 @@ only skills; commands, agents or hooks may follow.
   pin it to a release in `skill-pins.json` instead of editing the skill by hand: a regex `match`
   for upstream's install text, the `replace` text with `{version}`, the tool's `repo`, and the
   pinned `version` tag. `python3 scripts/pins.py --apply` writes pins, `--check` (CI) verifies
-  them, `--update` moves them to the newest stable release. `sync_upstream.py` re-applies pins
+  them, `--update` moves them to the newest stable release (and does the same for action pins in
+  skills written here, which need no entry in `skill-pins.json`). Tests: `tests/` (`unittest`,
+  offline). `sync_upstream.py` re-applies pins
   after every upstream update, and a pin is not counted as a local edit. Pin binary (precompiled)
   `gh` extensions to a release tag, the only form `gh extension install --pin` takes for them.
   Tool bumps arrive in their own PR (`deps-sync` branch, `chore(deps): ...`), separate from
